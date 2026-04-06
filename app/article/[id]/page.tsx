@@ -68,16 +68,16 @@ const DetailPage = ({ params }: Props) => {
 
   if (isLoading) {
     return (
-      <main className="mx-auto max-w-2xl px-6 py-16">
-        <h1 className="text-3xl font-bold">Loading...</h1>
+      <main className="mx-auto max-w-2xl px-4 py-12 sm:px-6 sm:py-16">
+        <h1 className="text-2xl font-bold sm:text-3xl">Loading...</h1>
       </main>
     );
   }
 
   if (!article) {
     return (
-      <main className="mx-auto max-w-2xl px-6 py-16">
-        <h1 className="text-3xl font-bold">Article not found</h1>
+      <main className="mx-auto max-w-2xl px-4 py-12 sm:px-6 sm:py-16">
+        <h1 className="text-2xl font-bold sm:text-3xl">Article not found</h1>
         <p className="mt-4 text-muted-foreground">
           The article is not saved in local storage yet.
         </p>
@@ -89,7 +89,7 @@ const DetailPage = ({ params }: Props) => {
   }
 
   return (
-    <main className="mx-auto max-w-2xl px-6 py-16">
+    <main className="mx-auto max-w-2xl px-4 py-12 sm:px-6 sm:py-16">
       <Link href="/article" className="text-blue-600 hover:underline">
         &larr; Back to articles
       </Link>
@@ -106,10 +106,10 @@ const DetailPage = ({ params }: Props) => {
         height={600}
         className="mt-3 h-auto w-full rounded-xl object-cover"
       />
-      <div className="flex items-center gap-4 mt-3 text-sm">
+      <div className="mt-3 flex flex-wrap items-center gap-2 text-sm sm:gap-4">
 
         {analysis?.keywords?.length > 0 && (
-          <p className="py-1 px-2 flex items-center gap-1 text-green-600 bg-green-100 rounded-2xl "><LuSparkles />{analysis.keywords.length} difficult words found</p>
+          <p className="flex items-center gap-1 rounded-2xl bg-green-100 px-2 py-1 text-green-600"><LuSparkles />{analysis.keywords.length} difficult words found</p>
         )}
 
         <Button onClick={() => setIsOpen(!isOpen)} className="bg-blue-600 text-white hover:bg-blue-700">
@@ -123,18 +123,18 @@ const DetailPage = ({ params }: Props) => {
           </Link>
         </Button>
       </div>
-      <h1 className="mt-3 text-3xl font-bold leading-tight">{article.title}</h1>
-      <p className="mt-4 text-lg text-muted-foreground">{article.description}</p>
+      <h1 className="mt-3 text-2xl font-bold leading-tight sm:text-3xl">{article.title}</h1>
+      <p className="mt-4 text-base text-muted-foreground sm:text-lg">{article.description}</p>
 
       {analysis && isOpen && (
-        <div className="mt-8 p-4 bg-gray rounded-3xl border border-gray-300 text-base">
-          <h2 className="text-xl font-semibold mb-2">Japanese Translation</h2>
+        <div className="mt-8 rounded-3xl border border-gray-300 bg-gray p-4 text-sm sm:text-base">
+          <h2 className="mb-2 text-lg font-semibold sm:text-xl">Japanese Translation</h2>
           <p className="text-muted-foreground">{analysis.translatedTitle}</p>
           <p className="text-muted-foreground">{analysis.translatedDescription}</p>
           <div className="mt-4 list-disc list-inside">
-            <h2 className="text-xl font-semibold mb-2">Keywords</h2>
+            <h2 className="mb-2 text-lg font-semibold sm:text-xl">Keywords</h2>
             {analysis.keywords?.map((item: any, idx: number) => (
-              <span key={idx} className="mr-4 whitespace-nowrap text-muted-foreground leading-relaxed">
+              <span key={idx} className="mr-4 inline-block whitespace-nowrap text-muted-foreground leading-relaxed">
                 {item.phrase}: {item.meaning}
               </span>
             ))}
