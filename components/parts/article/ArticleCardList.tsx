@@ -9,7 +9,9 @@ const ArticleList = () => {
 
   useEffect(() => {
     async function fetchArticles() {
-      const res = await fetch("/api/article");
+      const res = await fetch("/api/article",
+        { cache: "no-store" }
+      );
       const data = await res.json();
       setArticles(data.articles);
       setLoading(false);

@@ -31,7 +31,7 @@ const ArticleCard = ({ article }: ArticleCardProps) => {
       </CardHeader>
       <CardFooter>
         <Button className="w-full bg-blue-600" asChild>
-          <Link href={`/article/${article.id}`} target="_blank" className="text-blue-500">
+          <Link href={`/article/${article.id}`} className="text-blue-500">
             Read more
           </Link>
         </Button>

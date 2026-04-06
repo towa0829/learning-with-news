@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Article } from "@/lib/type";
-import { encode } from "punycode";
 
 export async function GET(req: NextRequest) {
   const res = await fetch(
@@ -9,7 +8,7 @@ export async function GET(req: NextRequest) {
   const data = await res.json();
 
   const articles = data.articles.map((article: Article) => ({
-    id: encodeURIComponent(article.title), 
+    id: encodeURIComponent(article.url), 
     title: article.title,
     description: article.description,
     url: article.url,
