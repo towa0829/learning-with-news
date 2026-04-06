@@ -6,42 +6,55 @@ import { useEffect, useState } from "react";
 import { Article } from "@/lib/type";
 
 type Props = {
-  params: Promise<{
-    id: string;
-  }>;
+  params: Promise<{ id: string }>;
 };
 
 const DetailPage = ({ params }: Props) => {
   const [article, setArticle] = useState<Article | null>(null);
+  const [analysis, setAnalysis] = useState<any>(null); // 翻訳＋重要語句
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     let isMounted = true;
 
-    async function loadArticle() {
+    async function loadAndAnalyze() {
       const { id } = await params;
 
       if (!id) {
-        if (isMounted) {
-          setArticle(null);
-          setIsLoading(false);
-        }
+        if (isMounted) setIsLoading(false);
         return;
       }
 
       const savedArticles = localStorage.getItem("savedArticles");
       const parsedArticles = savedArticles ? (JSON.parse(savedArticles) as Article[]) : [];
-      const savedArticle = parsedArticles.find((savedItem) => savedItem.id === id) ?? null;
+      const savedArticle = parsedArticles.find((item) => item.id === id) ?? null;
 
-      if (isMounted) {
-        setArticle(savedArticle);
-        setIsLoading(false);
+      if (!isMounted) return;
+
+      setArticle(savedArticle);
+      setIsLoading(false);
+
+      if (savedArticle) {
+        const res = await fetch("/api/article/analyze", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: savedArticle.title,
+            description: savedArticle.description,
+          }),
+        });
+        let data;
+        try {
+          data = await res.json();
+        } catch (err) {
+          console.error("Failed to parse JSON:", err);
+          data = { error: "Invalid JSON response" };
+        }
+        if (isMounted) setAnalysis(data); // analysis に保存
       }
     }
 
-   
-    loadArticle();
-
+    loadAndAnalyze();
 
     return () => {
       isMounted = false;
@@ -90,6 +103,21 @@ const DetailPage = ({ params }: Props) => {
       />
       <h1 className="mt-3 text-3xl font-bold leading-tight">{article.title}</h1>
       <p className="mt-4 text-lg text-muted-foreground">{article.description}</p>
+
+      {analysis && (
+        <div className="mt-6 p-4 border rounded-lg bg-gray-50">
+          <h2 className="text-xl font-semibold mb-2">翻訳 & 重要語句</h2>
+          <p><strong>タイトル翻訳:</strong> {analysis.translatedTitle}</p>
+          <p><strong>本文翻訳:</strong> {analysis.translatedDescription}</p>
+          <ul className="mt-2 list-disc list-inside">
+            {analysis.keyPhrases?.map((item: any, idx: number) => (
+              <li key={idx}>
+                <strong>{item.phrase}:</strong> {item.meaning}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </main>
   );
 };
