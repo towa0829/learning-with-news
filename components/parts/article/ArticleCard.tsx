@@ -1,3 +1,5 @@
+"use client";
+
 import { Article } from "@/lib/type";
 import Link from "next/link";
 import Image from "next/image";
@@ -15,6 +17,15 @@ type ArticleCardProps = {
   priority?: boolean;
 }
 const ArticleCard = ({ article }: ArticleCardProps) => {
+  const handleClick = () => {
+    const savedArticles = localStorage.getItem("savedArticles");
+    const parsedArticles = savedArticles ? (JSON.parse(savedArticles) as Article[]) : [];
+    const nextArticles = parsedArticles.filter((savedArticle) => savedArticle.id !== article.id);
+
+    nextArticles.push(article);
+    localStorage.setItem("savedArticles", JSON.stringify(nextArticles));
+  };
+
   return (
     <Card className="mx-auto w-full max-w-sm pt-0">
       <img
@@ -31,7 +42,11 @@ const ArticleCard = ({ article }: ArticleCardProps) => {
       </CardHeader>
       <CardFooter>
         <Button className="w-full bg-blue-600" asChild>
-          <Link href={`/article/${article.id}`} target="_blank" className="text-blue-500">
+          <Link
+            href={`/article/${article.id}`}
+            onClick={handleClick}
+            className="text-blue-500"
+          >
             Read more
           </Link>
         </Button>

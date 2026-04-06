@@ -1,0 +1,149 @@
+"use client";
+
+import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import { Article } from "@/lib/type";
+import { LuSparkles } from "react-icons/lu";
+import { MdGTranslate } from "react-icons/md";
+import { MdOutlineExitToApp } from "react-icons/md";
+
+type Props = {
+  params: Promise<{ id: string }>;
+};
+
+const DetailPage = ({ params }: Props) => {
+  const [article, setArticle] = useState<Article | null>(null);
+  const [analysis, setAnalysis] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadAndAnalyze() {
+      const { id } = await params;
+
+      if (!id) {
+        if (isMounted) setIsLoading(false);
+        return;
+      }
+
+      const savedArticles = localStorage.getItem("savedArticles");
+      const parsedArticles = savedArticles ? (JSON.parse(savedArticles) as Article[]) : [];
+      const savedArticle = parsedArticles.find((item) => item.id === id) ?? null;
+
+      if (!isMounted) return;
+
+      setArticle(savedArticle);
+      setIsLoading(false);
+
+      if (savedArticle) {
+        const res = await fetch("/api/article/analyze", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: savedArticle.title,
+            description: savedArticle.description,
+          }),
+        });
+        let data;
+        try {
+          data = await res.json();
+        } catch (err) {
+          console.error("Failed to parse JSON:", err);
+          data = { error: "Invalid JSON response" };
+        }
+        if (isMounted) setAnalysis(data); // analysis に保存
+      }
+    }
+
+    loadAndAnalyze();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [params]);
+
+  if (isLoading) {
+    return (
+      <main className="mx-auto max-w-2xl px-6 py-16">
+        <h1 className="text-3xl font-bold">Loading...</h1>
+      </main>
+    );
+  }
+
+  if (!article) {
+    return (
+      <main className="mx-auto max-w-2xl px-6 py-16">
+        <h1 className="text-3xl font-bold">Article not found</h1>
+        <p className="mt-4 text-muted-foreground">
+          The article is not saved in local storage yet.
+        </p>
+        <Link href="/article" className="mt-6 inline-block text-blue-600">
+          Back to articles
+        </Link>
+      </main>
+    );
+  }
+
+  return (
+    <main className="mx-auto max-w-2xl px-6 py-16">
+      <Link href="/article" className="text-blue-600 hover:underline">
+        &larr; Back to articles
+      </Link>
+      <p className="mt-4 text-sm text-muted-foreground">
+        {article.publishedAt.slice(0, 10)}
+      </p>
+      <p className="mb-4 text-sm text-muted-foreground">
+        {article.author} from {article.source.name}
+      </p>
+      <Image
+        src={article.urlToImage}
+        alt={article.title}
+        width={800}
+        height={600}
+        className="mt-3 h-auto w-full rounded-xl object-cover"
+      />
+      <div className="flex items-center gap-4 mt-3 text-sm">
+
+        {analysis?.keywords?.length > 0 && (
+          <p className="py-1 px-2 flex items-center gap-1 text-green-600 bg-green-100 rounded-2xl "><LuSparkles />{analysis.keywords.length} difficult words found</p>
+        )}
+
+        <Button onClick={() => setIsOpen(!isOpen)} className="bg-blue-600 text-white hover:bg-blue-700">
+          <MdGTranslate />
+          {isOpen ? "Hide" : "Show"} Translation
+        </Button>
+
+        <Button className="bg-black text-white hover:bg-gray-800">
+          <Link href={article.url} target="_blank" rel="noopener noreferrer" className="text-white flex items-center gap-1">
+            View Original<MdOutlineExitToApp className="w-7 h-7 mt-0.5" />
+          </Link>
+        </Button>
+      </div>
+      <h1 className="mt-3 text-3xl font-bold leading-tight">{article.title}</h1>
+      <p className="mt-4 text-lg text-muted-foreground">{article.description}</p>
+
+      {analysis && isOpen && (
+        <div className="mt-8 p-4 bg-gray rounded-3xl border border-gray-300 text-base">
+          <h2 className="text-xl font-semibold mb-2">Japanese Translation</h2>
+          <p className="text-muted-foreground">{analysis.translatedTitle}</p>
+          <p className="text-muted-foreground">{analysis.translatedDescription}</p>
+          <div className="mt-4 list-disc list-inside">
+            <h2 className="text-xl font-semibold mb-2">Keywords</h2>
+            {analysis.keywords?.map((item: any, idx: number) => (
+              <span key={idx} className="mr-4 whitespace-nowrap text-muted-foreground leading-relaxed">
+                {item.phrase}: {item.meaning}
+              </span>
+            ))}
+          </div>
+          <p className="mt-4 text-sm text-gray-500 text-right">Translated with AI assistance</p>
+        </div>
+      )}
+    </main>
+  );
+};
+
+export default DetailPage;
