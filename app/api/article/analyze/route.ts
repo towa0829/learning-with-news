@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
 type RequestBody = {
   title?: string;
   description?: string;
@@ -30,6 +26,10 @@ export async function POST(request: NextRequest) {
         keywords: [],
       });
     }
+
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
 
     const prompt = `
       以下のニュース記事を日本語にし翻訳し、重要語句とその意味をリストにしてください。
