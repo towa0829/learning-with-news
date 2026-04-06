@@ -2,8 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { Article } from "@/lib/type";
+import { LuSparkles } from "react-icons/lu";
+import { MdGTranslate } from "react-icons/md";
+import { MdOutlineExitToApp } from "react-icons/md";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -11,8 +15,9 @@ type Props = {
 
 const DetailPage = ({ params }: Props) => {
   const [article, setArticle] = useState<Article | null>(null);
-  const [analysis, setAnalysis] = useState<any>(null); // 翻訳＋重要語句
+  const [analysis, setAnalysis] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -101,21 +106,40 @@ const DetailPage = ({ params }: Props) => {
         height={600}
         className="mt-3 h-auto w-full rounded-xl object-cover"
       />
+      <div className="flex items-center gap-4 mt-3 text-sm">
+
+        {analysis?.keywords?.length > 0 && (
+          <p className="py-1 px-2 flex items-center gap-1 text-green-600 bg-green-100 rounded-2xl "><LuSparkles />{analysis.keywords.length} difficult words found</p>
+        )}
+
+        <Button onClick={() => setIsOpen(!isOpen)} className="bg-blue-600 text-white hover:bg-blue-700">
+          <MdGTranslate />
+          {isOpen ? "Hide" : "Show"} Translation
+        </Button>
+
+        <Button className="bg-black text-white hover:bg-gray-800">
+          <Link href={article.url} target="_blank" rel="noopener noreferrer" className="text-white flex items-center gap-1">
+            View Original<MdOutlineExitToApp className="w-7 h-7 mt-0.5" />
+          </Link>
+        </Button>
+      </div>
       <h1 className="mt-3 text-3xl font-bold leading-tight">{article.title}</h1>
       <p className="mt-4 text-lg text-muted-foreground">{article.description}</p>
 
-      {analysis && (
-        <div className="mt-6 p-4 border rounded-lg bg-gray-50">
-          <h2 className="text-xl font-semibold mb-2">翻訳 & 重要語句</h2>
-          <p><strong>タイトル翻訳:</strong> {analysis.translatedTitle}</p>
-          <p><strong>本文翻訳:</strong> {analysis.translatedDescription}</p>
-          <ul className="mt-2 list-disc list-inside">
-            {analysis.keyPhrases?.map((item: any, idx: number) => (
-              <li key={idx}>
-                <strong>{item.phrase}:</strong> {item.meaning}
-              </li>
+      {analysis && isOpen && (
+        <div className="mt-8 p-4 bg-gray rounded-3xl border border-gray-300 text-base">
+          <h2 className="text-xl font-semibold mb-2">Japanese Translation</h2>
+          <p className="text-muted-foreground">{analysis.translatedTitle}</p>
+          <p className="text-muted-foreground">{analysis.translatedDescription}</p>
+          <div className="mt-4 list-disc list-inside">
+            <h2 className="text-xl font-semibold mb-2">Keywords</h2>
+            {analysis.keywords?.map((item: any, idx: number) => (
+              <span key={idx} className="mr-4 whitespace-nowrap text-muted-foreground leading-relaxed">
+                {item.phrase}: {item.meaning}
+              </span>
             ))}
-          </ul>
+          </div>
+          <p className="mt-4 text-sm text-gray-500 text-right">Translated with AI assistance</p>
         </div>
       )}
     </main>

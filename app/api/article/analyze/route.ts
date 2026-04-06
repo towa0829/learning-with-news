@@ -27,12 +27,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({
         translatedTitle: title,
         translatedDescription: description,
-        keyPhrases: [],
+        keywords: [],
       });
     }
 
     const prompt = `
       以下のニュース記事を日本語にし翻訳し、重要語句とその意味をリストにしてください。
+      なお、keywordsは出た順で並べてください。
       タイトル: ${title}
       説明: ${description}
 
@@ -40,7 +41,7 @@ export async function POST(request: NextRequest) {
       {
         "translatedTitle": "翻訳されたタイトル",
         "translatedDescription": "翻訳された説明",
-        "keyPhrases": [
+        "keywords": [
           {
             "phrase": "重要語句(英語)",
             "meaning": "意味"
@@ -67,7 +68,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({
         translatedTitle: title,
         translatedDescription: description,
-        keyPhrases: [],
+        keywords: [],
       });
     }
 
@@ -75,19 +76,19 @@ export async function POST(request: NextRequest) {
       const parsed = JSON.parse(content) as {
         translatedTitle?: string;
         translatedDescription?: string;
-        keyPhrases?: Array<{ phrase: string; meaning: string }>;
+        keywords?: Array<{ phrase: string; meaning: string }>;
       };
 
       return NextResponse.json({
         translatedTitle: parsed.translatedTitle ?? title,
         translatedDescription: parsed.translatedDescription ?? description,
-        keyPhrases: parsed.keyPhrases ?? [],
+        keywords: parsed.keywords ?? [],
       });
     } catch {
       return NextResponse.json({
         translatedTitle: title,
         translatedDescription: description,
-        keyPhrases: [],
+        keywords: [],
       });
     }
   } catch {
