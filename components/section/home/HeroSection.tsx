@@ -15,7 +15,7 @@ const HeroSection = () => {
       </p>
       <div className="flex gap-3 items-center">
         <Button asChild className="bg-blue-600! hover:bg-blue-700! text-white! py-5 px-4">
-          <Link href="/learn">Start Reading<FaArrowRightLong /></Link>
+          <Link href="/article">Start Reading<FaArrowRightLong /></Link>
         </Button>
         <Button asChild className="bg-white! hover:bg-blue-600! text-black! hover:text-white! border-gray-400 py-5 px-4">
           <Link href="/vocabulary">View Vocabulary</Link>
