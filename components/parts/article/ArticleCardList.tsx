@@ -25,9 +25,9 @@ const ArticleList = () => {
   }
 
   return (
-    <div>
-      {articles.map((article, index) => (
-        <ArticleCard key={article.id} article={article} priority={index === 0} />
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {articles.map((article) => (
+        <ArticleCard key={article.id} article={article} />
       ))}
     </div>
   )

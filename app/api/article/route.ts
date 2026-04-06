@@ -4,7 +4,7 @@ import { encode } from "punycode";
 
 export async function GET(req: NextRequest) {
   const res = await fetch(
-  `https://newsapi.org/v2/top-headlines?country=us&language=en&pageSize=8&apiKey=${process.env.NEWS_API_KEY}`
+  `https://newsapi.org/v2/top-headlines?country=us&language=en&pageSize=10&apiKey=${process.env.NEWS_API_KEY}`
   );
   const data = await res.json();
 
