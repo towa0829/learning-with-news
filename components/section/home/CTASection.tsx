@@ -9,7 +9,7 @@ const CTASection = () => {
         <h2 className="text-3xl font-bold">Ready to Improve Your English?</h2>
         <p className="text-base text-muted-foreground mt-4 mb-6">Start reading real news articles and building your vocabulary today!</p>
         <Button asChild className="bg-blue-600! hover:bg-blue-700! text-white! rounded-sm py-5 px-6">
-          <Link href="/learn">Start Reading<FaArrowRightLong /></Link>
+          <Link href="/learn">Browse Articles<FaArrowRightLong /></Link>
         </Button>
       </div>
     </section>
