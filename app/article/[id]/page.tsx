@@ -111,12 +111,12 @@ const DetailPage = ({ params }: Props) => {
         {analysis?.keywords?.length > 0 && (
           <p className="flex items-center gap-1 rounded-2xl bg-green-100 px-2 py-1 text-green-600"><LuSparkles />{analysis.keywords.length} difficult words found</p>
         )}
-
-        <Button onClick={() => setIsOpen(!isOpen)} className="bg-blue-600 text-white hover:bg-blue-700">
-          <MdGTranslate />
-          {isOpen ? "Hide" : "Show"} Translation
-        </Button>
-
+        {analysis && (
+          <Button onClick={() => setIsOpen((prev) => !prev)} className="bg-blue-600 text-white hover:bg-blue-700">
+            <MdGTranslate />
+            {isOpen ? "Hide" : "Show"} Translation
+          </Button>
+        )}
         <Button className="bg-black text-white hover:bg-gray-800">
           <Link href={article.url} target="_blank" rel="noopener noreferrer" className="text-white flex items-center gap-1">
             View Original<MdOutlineExitToApp className="w-7 h-7 mt-0.5" />
