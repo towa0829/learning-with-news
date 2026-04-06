@@ -24,7 +24,7 @@ export default function RootLayout({
       lang="ja"
       className={`${notoSansJp.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="flex min-h-full flex-col overflow-x-hidden">
         <Header />
         {children}
         <Footer />

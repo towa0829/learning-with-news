@@ -5,19 +5,19 @@ import { FaArrowRightLong } from "react-icons/fa6";
 
 const HeroSection = () => {
   return (
-    <section className="flex flex-col items-center text-center py-30 gap-8">
+    <section className="flex flex-col items-center gap-6 px-4 py-16 text-center sm:px-6 sm:py-24 lg:py-30">
       <div className="py-1 px-3 rounded-3xl bg-blue-50 text-blue-600 border border-blue-200">
         <p className="flex gap-2 items-center"><IoBookOutline className="mt-1" />Learn English through Real News</p>
       </div>
-      <h1 className="text-5xl font-extrabold leading-tight">Master English with<br /><span className="text-blue-600">Real-World News</span></h1>
-      <p className="text-lg text-muted-foreground max-w-2xl">
+      <h1 className="text-3xl font-extrabold leading-tight sm:text-4xl lg:text-5xl">Master English with<br /><span className="text-blue-600">Real-World News</span></h1>
+      <p className="max-w-2xl text-base text-muted-foreground sm:text-lg">
         Read authentic English news articles, learn difficult vocabulary with AI-powered analysis, and build your language skills naturally.
       </p>
-      <div className="flex gap-3 items-center">
-        <Button asChild className="bg-blue-600! hover:bg-blue-700! text-white! py-5 px-4">
+      <div className="flex w-full flex-col items-center gap-3 sm:w-auto sm:flex-row">
+        <Button asChild className="w-full bg-blue-600! px-4 py-5 text-white! hover:bg-blue-700! sm:w-auto">
           <Link href="/article">Start Reading<FaArrowRightLong /></Link>
         </Button>
-        <Button asChild className="bg-white! hover:bg-blue-600! text-black! hover:text-white! border-gray-400 py-5 px-4">
+        <Button asChild className="w-full border-gray-400 bg-white! px-4 py-5 text-black! hover:bg-blue-600! hover:text-white! sm:w-auto">
           <Link href="/vocabulary">View Vocabulary</Link>
         </Button>
       </div>

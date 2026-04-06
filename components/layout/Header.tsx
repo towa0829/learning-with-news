@@ -11,10 +11,10 @@ import { IoHomeOutline } from "react-icons/io5";
 
 const Header = () => {
   return (
-    <header className="sticky top-0 z-50 bg-white py-3 px-40 flex items-center justify-between border-b border-gray-300">
-      <h1 className="text-2xl font-extrabold flex items-center gap-2"><IoBookOutline className="mt-1 text-blue-600" />NewsLingo</h1>
+    <header className="sticky top-0 z-50 flex flex-wrap items-center justify-between gap-3 border-b border-gray-300 bg-white px-4 py-3 sm:px-6 lg:px-40">
+      <h1 className="flex items-center gap-2 text-xl font-extrabold sm:text-2xl"><IoBookOutline className="mt-1 text-blue-600" />NewsLingo</h1>
       <NavigationMenu>
-        <NavigationMenuList className="flex items-center gap-5">
+        <NavigationMenuList className="flex flex-wrap items-center gap-3 sm:gap-5">
           <NavigationMenuItem>
             <NavigationMenuLink href="/"><IoHomeOutline />Home</NavigationMenuLink>
           </NavigationMenuItem>
