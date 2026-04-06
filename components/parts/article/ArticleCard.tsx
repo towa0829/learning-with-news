@@ -1,0 +1,43 @@
+import { Article } from "@/lib/type";
+import Link from "next/link";
+import Image from "next/image";
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+
+type ArticleCardProps = {
+  article: Article;
+  priority?: boolean;
+}
+const ArticleCard = ({ article }: ArticleCardProps) => {
+  return (
+    <Card className="mx-auto w-full max-w-sm pt-0">
+      <img
+        src={article.urlToImage}
+        alt={article.title}
+        className="relative z-20 aspect-video w-full object-cover"
+      />
+      <CardHeader>
+        <p>{article.publishedAt.slice(0, 10)}</p>
+        <CardTitle className="line-clamp-2">{article.title}</CardTitle>
+        <CardDescription className="line-clamp-2">
+          {article.description}
+        </CardDescription>
+      </CardHeader>
+      <CardFooter>
+        <Button className="w-full bg-blue-600" asChild>
+          <Link href={`/article/${article.id}`} target="_blank" className="text-blue-500">
+            Read more
+          </Link>
+        </Button>
+      </CardFooter>
+    </Card>
+  )
+}
+
+export default ArticleCard

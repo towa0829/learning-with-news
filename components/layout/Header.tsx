@@ -16,13 +16,13 @@ const Header = () => {
       <NavigationMenu>
         <NavigationMenuList className="flex items-center gap-5">
           <NavigationMenuItem>
-            <NavigationMenuLink><IoHomeOutline />Home</NavigationMenuLink>
+            <NavigationMenuLink href="/"><IoHomeOutline />Home</NavigationMenuLink>
           </NavigationMenuItem>
           <NavigationMenuItem>
-            <NavigationMenuLink><GrArticle />Articles</NavigationMenuLink>
+            <NavigationMenuLink href="/article"><GrArticle />Articles</NavigationMenuLink>
           </NavigationMenuItem>
           <NavigationMenuItem>
-            <NavigationMenuLink><FaSave />Vocabulary</NavigationMenuLink>
+            <NavigationMenuLink href="/vocabulary"><FaSave />Vocabulary</NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
