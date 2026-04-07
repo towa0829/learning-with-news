@@ -32,7 +32,7 @@ const KeyWord = ({item }: Props) => {
   return (
     <Drawer>
       <DrawerTrigger>
-        <span className="mr-3 mb-2 inline-block whitespace-nowrap text-black leading-relaxed cursor-pointer bg-white shadow-sm px-2 py-1 rounded-xl border hover:bg-gray-100 hover:border-gray-800">
+        <span className="mr-3 mb-2 inline-block whitespace-nowrap text-black leading-relaxed cursor-pointer bg-white shadow-sm px-2 py-1 rounded-xl border hover:bg-gray-50 hover:border-gray-300">
           {item.phrase}<span className="text-muted-foreground"> : {item.meaning}</span>
         </span>
       </DrawerTrigger>
