@@ -89,7 +89,7 @@ const DetailPage = ({ params }: Props) => {
   }
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-12 sm:px-6 sm:py-16">
+    <main className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
       <Link href="/article" className="text-blue-600 hover:underline">
         &larr; Back to articles
       </Link>
@@ -134,7 +134,9 @@ const DetailPage = ({ params }: Props) => {
           <div className="mt-4 list-disc list-inside">
             <h2 className="mb-2 text-lg font-semibold sm:text-xl">Keywords</h2>
             {analysis.keywords?.map((item: any, idx: number) => (
-              <span key={idx} className="mr-4 inline-block whitespace-nowrap text-muted-foreground leading-relaxed">
+              
+              <span key={idx} className="mr-3 inline-block whitespace-nowrap text-muted-foreground leading-relaxed">
+                {idx > 0 && <span className="mr-2">/</span>}
                 {item.phrase}: {item.meaning}
               </span>
             ))}

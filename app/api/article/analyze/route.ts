@@ -32,23 +32,32 @@ export async function POST(request: NextRequest) {
     });
 
     const prompt = `
-      以下のニュース記事を日本語にし翻訳し、重要語句とその意味をリストにしてください。
-      なお、keywordsは出た順で並べてください。
-      タイトル: ${title}
-      説明: ${description}
+以下の英語ニュース記事を日本語に翻訳し，英語学習に役立つ重要語句を抽出してください．
 
-      出力形式は以下のJSON形式でお願いします。
-      {
-        "translatedTitle": "翻訳されたタイトル",
-        "translatedDescription": "翻訳された説明",
-        "keywords": [
-          {
-            "phrase": "重要語句(英語)",
-            "meaning": "意味"
-          }
-        ]
-      }
-    `;
+【要件】
+- タイトルと説明文を自然な日本語に翻訳する
+- keywordsは記事内に登場した順番で並べる
+- keywordsには英語学習上重要な語句のみを5〜10個抽出する
+- 固有名詞のみの抽出は避ける
+- 熟語や頻出表現を優先する
+- 必ずJSONのみを出力し，説明文やコードブロックは付けない
+
+【記事】
+タイトル: ${title}
+説明: ${description}
+
+【出力形式】
+{
+  "translatedTitle": "翻訳されたタイトル",
+  "translatedDescription": "翻訳された説明",
+  "keywords": [
+    {
+      "phrase": "重要語句（英語）",
+      "meaning": "日本語の意味"
+    }
+  ]
+}
+`;
 
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
