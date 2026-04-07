@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
+import { Vocabulary } from "@/lib/type";
 
 type RequestBody = {
   title?: string;
@@ -40,6 +41,7 @@ export async function POST(request: NextRequest) {
 - keywordsには英語学習上重要な語句のみを5〜10個抽出する
 - 固有名詞のみの抽出は避ける
 - 熟語や頻出表現を優先する
+- keywordsには意味と簡単な例文を必ずつける
 - 必ずJSONのみを出力し，説明文やコードブロックは付けない
 
 【記事】
@@ -53,7 +55,11 @@ export async function POST(request: NextRequest) {
   "keywords": [
     {
       "phrase": "重要語句（英語）",
-      "meaning": "日本語の意味"
+      "meaning": "日本語の意味",
+      "example_sentence": {
+        "en": "英語の例文",
+        "ja": "日本語の例文"
+      } 
     }
   ]
 }
@@ -85,7 +91,7 @@ export async function POST(request: NextRequest) {
       const parsed = JSON.parse(content) as {
         translatedTitle?: string;
         translatedDescription?: string;
-        keywords?: Array<{ phrase: string; meaning: string }>;
+        keywords?: Array<Vocabulary>;
       };
 
       return NextResponse.json({

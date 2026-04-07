@@ -10,3 +10,12 @@ export type Article = {
   urlToImage: string;
   publishedAt: string;
 }
+
+export type Vocabulary = {
+  phrase: string;
+  meaning: string;
+  example_sentence: {
+    en: string;
+    ja: string;
+  }
+}

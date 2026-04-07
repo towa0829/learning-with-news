@@ -4,10 +4,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import { Article } from "@/lib/type";
+import { Article} from "@/lib/type";
 import { LuSparkles } from "react-icons/lu";
 import { MdGTranslate } from "react-icons/md";
 import { MdOutlineExitToApp } from "react-icons/md";
+import Keyword from "@/components/parts/article/KeyWord";
+
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -127,18 +129,14 @@ const DetailPage = ({ params }: Props) => {
       <p className="mt-4 text-base text-muted-foreground sm:text-lg">{article.description}</p>
 
       {analysis && isOpen && (
-        <div className="mt-8 rounded-3xl border border-gray-300 bg-gray p-4 text-sm sm:text-base">
+        <div className="mt-8 rounded-3xl border border-gray-300 bg-white p-4 text-sm sm:text-base">
           <h2 className="mb-2 text-lg font-semibold sm:text-xl">Japanese Translation</h2>
           <p className="text-muted-foreground">{analysis.translatedTitle}</p>
           <p className="text-muted-foreground">{analysis.translatedDescription}</p>
           <div className="mt-4 list-disc list-inside">
             <h2 className="mb-2 text-lg font-semibold sm:text-xl">Keywords</h2>
             {analysis.keywords?.map((item: any, idx: number) => (
-              
-              <span key={idx} className="mr-3 inline-block whitespace-nowrap text-muted-foreground leading-relaxed">
-                {idx > 0 && <span className="mr-2">/</span>}
-                {item.phrase}: {item.meaning}
-              </span>
+              <Keyword key={idx} item={item} />
             ))}
           </div>
           <p className="mt-4 text-sm text-gray-500 text-right">Translated with AI assistance</p>
