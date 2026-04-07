@@ -21,6 +21,10 @@ const ArticleCard = ({ article }: ArticleCardProps) => {
     const savedArticles = localStorage.getItem("savedArticles");
     const parsedArticles = savedArticles ? (JSON.parse(savedArticles) as Article[]) : [];
     const nextArticles = parsedArticles.filter((savedArticle) => savedArticle.id !== article.id);
+    
+    if (nextArticles.length >= 30) {
+      nextArticles.shift();
+    }
 
     nextArticles.push(article);
     localStorage.setItem("savedArticles", JSON.stringify(nextArticles));

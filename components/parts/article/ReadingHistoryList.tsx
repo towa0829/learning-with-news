@@ -11,7 +11,7 @@ const ReadingHistoryList = () => {
     async function loadArticles() {
       const savedArticles = localStorage.getItem("savedArticles");
       const parsedArticles = savedArticles ? (JSON.parse(savedArticles) as Article[]) : [];
-      setArticles(parsedArticles);
+      setArticles(parsedArticles.reverse());
       setLoading(false);
     }
     loadArticles();
