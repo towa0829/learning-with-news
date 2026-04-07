@@ -14,7 +14,7 @@ const VocabularyListPage = () => {
     async function loadVocabulary() {
       const savedVocabulary = localStorage.getItem("savedVocabulary");
       const parsedVocabulary = savedVocabulary ? (JSON.parse(savedVocabulary) as Vocabulary[]) : [];
-      setVocabulary(parsedVocabulary);
+      setVocabulary(parsedVocabulary.reverse());
     }
     loadVocabulary();
   }, []);
