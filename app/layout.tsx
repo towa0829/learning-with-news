@@ -10,8 +10,8 @@ const notoSansJp = Noto_Sans_JP({
 });
 
 export const metadata: Metadata = {
-  title: "Learning with News",
-  description: "Learn English through Real News - Read authentic news articles, learn difficult vocabulary with AI-powered analysis, and build your language skills naturally.",
+  title: "NewsLingo",
+  description: "A news-based English learning app that helps you improve your English skills while keeping up with the latest news. Read news articles, save your favorites, and learn new vocabulary with example sentences.",
 };
 
 export default function RootLayout({
