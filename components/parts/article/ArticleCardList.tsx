@@ -7,23 +7,34 @@ const CategoryList: Category[] = ["business", "entertainment", "general", "healt
 
 type Props = {
   category: Category;
+  keyword: string;
 }
 
-const ArticleList = ({ category }: Props) => {
+const ArticleList = ({ category, keyword = "" }: Props) => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchArticles(category: Category = "general") {
-      const res = await fetch(`/api/article?category=${category}`, {
-        cache: "no-store"
+    async function fetchArticles() {
+      setLoading(true);
+
+      const params = new URLSearchParams();
+      if (keyword?.trim()) {
+        params.set("keyword", keyword.trim());
+      } else {
+        params.set("category", category);
+      }
+
+      const res = await fetch(`/api/article?${params.toString()}`, {
+        cache: "no-store",
       });
       const data = await res.json();
       setArticles(data.articles);
       setLoading(false);
     }
-    fetchArticles(category);
-  }, [category]);
+
+    fetchArticles();
+  }, [category, keyword]);
 
   if (loading) {
     return <p>Loading...</p>;

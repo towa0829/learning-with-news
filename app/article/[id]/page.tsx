@@ -101,12 +101,10 @@ const DetailPage = ({ params }: Props) => {
       <p className="mb-4 text-sm text-muted-foreground">
         {article.author} from {article.source.name}
       </p>
-      <Image
-        src={article.urlToImage}
+      <img
+        src={article.urlToImage || "/no-image.png"}
         alt={article.title}
-        width={800}
-        height={600}
-        className="mt-3 h-auto w-full rounded-xl object-cover"
+        className="relative z-20 aspect-video w-full object-cover"
       />
       <div className="mt-3 flex flex-wrap items-center gap-2 text-sm sm:gap-4">
 

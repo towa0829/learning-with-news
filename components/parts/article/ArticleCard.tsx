@@ -33,14 +33,16 @@ const ArticleCard = ({ article }: ArticleCardProps) => {
   return (
     <Card className="mx-auto w-full max-w-md pt-0 md:max-w-none">
       <img
-        src={article.urlToImage}
+        src={article.urlToImage || "/no-image.png"}
         alt={article.title}
         className="relative z-20 aspect-video w-full object-cover"
       />
       <CardHeader>
         <p className="text-sm text-muted-foreground">{article.publishedAt.slice(0, 10)}</p>
-        <CardTitle className="line-clamp-2">{article.title}</CardTitle>
-        <CardDescription className="line-clamp-2">
+        <CardTitle className="line-clamp-2 min-h-12">
+          {article.title}
+          </CardTitle>
+        <CardDescription className="line-clamp-2 min-h-11">
           {article.description}
         </CardDescription>
       </CardHeader>
