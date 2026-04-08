@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Category } from "@/lib/type";
 import { useState } from "react";
 import { Input } from "@/components/ui/input"
+import { FaSearch } from "react-icons/fa";
 
 const CategoryList: Category[] = ["general", "business", "entertainment", "health", "science", "sports", "technology"];
 
@@ -42,7 +43,7 @@ const ArticleListPage = () => {
           onChange={(event) => setInputValue(event.target.value)}
           className="sm:flex-1"
         />
-        <Button type="submit">Search</Button>
+        <Button type="submit"><FaSearch /></Button>
       </form>
 
       <div className="mb-3 flex flex-wrap items-center gap-1">
