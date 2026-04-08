@@ -1,23 +1,29 @@
 "use client";
 import ArticleCard from "./ArticleCard";
 import { useState, useEffect } from "react";
-import { Article } from "@/lib/type";
+import { Article, Category } from "@/lib/type";
 
-const ArticleList = () => {
+const CategoryList: Category[] = ["business", "entertainment", "general", "health", "science", "sports", "technology"];
+
+type Props = {
+  category: Category;
+}
+
+const ArticleList = ({ category }: Props) => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchArticles() {
-      const res = await fetch("/api/article",
-        { cache: "no-store" }
-      );
+    async function fetchArticles(category: Category = "general") {
+      const res = await fetch(`/api/article?category=${category}`, {
+        cache: "no-store"
+      });
       const data = await res.json();
       setArticles(data.articles);
       setLoading(false);
     }
-    fetchArticles();
-  }, []);
+    fetchArticles(category);
+  }, [category]);
 
   if (loading) {
     return <p>Loading...</p>;

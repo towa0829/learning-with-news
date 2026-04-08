@@ -2,8 +2,17 @@ import { NextRequest, NextResponse } from "next/server";
 import { Article } from "@/lib/type";
 
 export async function GET(req: NextRequest) {
+  const category = req.nextUrl.searchParams.get("category") || "general";
+  
+  const params = new URLSearchParams({
+    country: "us",
+    category: category,
+    pageSize: "10",
+    apiKey: process.env.NEWS_API_KEY!,
+  });
+  
   const res = await fetch(
-    `https://newsapi.org/v2/top-headlines?country=us&language=en&pageSize=10&apiKey=${process.env.NEWS_API_KEY}`
+    `https://newsapi.org/v2/top-headlines?${params.toString()}`
   );
   const data = await res.json();
 
