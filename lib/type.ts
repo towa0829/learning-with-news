@@ -11,7 +11,7 @@ export type Article = {
   publishedAt: string;
 }
 
-export type Category = "business" | "entertainment" | "general" | "health" | "science" | "sports" | "technology";
+export type Category = "business" | "entertainment" | "general" | "health" | "science" | "sports" | "technology" | "";
 
 export type Vocabulary = {
   phrase: string;
