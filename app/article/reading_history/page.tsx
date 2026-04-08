@@ -1,6 +1,12 @@
+import type { Metadata } from "next";
 import ReadingHistoryList from "@/components/parts/article/ReadingHistoryList";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "閲覧履歴",
+  description: "これまでに読んだニュース記事の履歴を確認できるページ。学習の振り返りに活用できます。",
+};
 
 const ReadingHistoryPage = () => {
   return (

@@ -11,7 +11,7 @@ const HeroSection = () => {
       </div>
       <h1 className="text-3xl font-extrabold leading-tight sm:text-4xl lg:text-5xl">Master English with<br /><span className="text-blue-600">Real-World News</span></h1>
       <p className="max-w-2xl text-base text-muted-foreground sm:text-lg">
-        Read authentic English news articles, learn difficult vocabulary with AI-powered analysis, and build your language skills naturally.
+        最新の英語ニュースを通じて、さまざまな分野の知識に触れながら、AI分析で難しい語彙を理解し、実践的な英語力を無理なく伸ばせます。
       </p>
       <div className="flex w-full flex-col items-center gap-3 sm:w-auto sm:flex-row">
         <Button asChild className="w-full bg-blue-600! px-4 py-5 text-white! hover:bg-blue-700! sm:w-auto">
