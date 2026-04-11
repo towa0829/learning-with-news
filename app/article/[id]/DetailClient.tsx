@@ -8,6 +8,7 @@ import { LuSparkles } from "react-icons/lu";
 import { MdGTranslate } from "react-icons/md";
 import { MdOutlineExitToApp } from "react-icons/md";
 import Keyword from "@/components/parts/article/KeyWord";
+import { ShimmeringText } from "@/components/unlumen-ui/shimmering-text";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -105,6 +106,18 @@ const DetailClient = ({ params }: Props) => {
         className="relative z-20 aspect-video w-full object-cover"
       />
       <div className="mt-3 flex flex-wrap items-center gap-2 text-sm sm:gap-4">
+        <Button className="bg-black text-white hover:bg-gray-800">
+          <Link href={article.url} target="_blank" rel="noopener noreferrer" className="text-white flex items-center gap-1">
+            View Original<MdOutlineExitToApp className="w-7 h-7 mt-0.5" />
+          </Link>
+        </Button>
+      </div>
+      <h1 className="mt-3 text-2xl font-bold leading-tight sm:text-3xl">{article.title}</h1>
+      <p className="mt-4 text-base text-muted-foreground sm:text-lg">{article.description}</p>
+      <div className="mt-3 flex flex-wrap items-center gap-2 text-sm sm:gap-4">
+        {!analysis && (
+          <ShimmeringText text="Agent is analyzing..." duration={1.5} repeat={true} className="text-base"/>
+        )}
         {analysis?.keywords?.length > 0 && (
           <p className="flex items-center gap-1 rounded-2xl bg-green-100 px-2 py-1 text-green-600"><LuSparkles />{analysis.keywords.length} difficult words found</p>
         )}
@@ -114,15 +127,7 @@ const DetailClient = ({ params }: Props) => {
             {isOpen ? "Hide" : "Show"} Translation
           </Button>
         )}
-        <Button className="bg-black text-white hover:bg-gray-800">
-          <Link href={article.url} target="_blank" rel="noopener noreferrer" className="text-white flex items-center gap-1">
-            View Original<MdOutlineExitToApp className="w-7 h-7 mt-0.5" />
-          </Link>
-        </Button>
       </div>
-      <h1 className="mt-3 text-2xl font-bold leading-tight sm:text-3xl">{article.title}</h1>
-      <p className="mt-4 text-base text-muted-foreground sm:text-lg">{article.description}</p>
-
       {analysis && isOpen && (
         <div className="mt-8 rounded-3xl border border-gray-300 bg-white p-4 text-sm sm:text-base">
           <h2 className="mb-2 text-lg font-semibold sm:text-xl">Japanese Translation</h2>
