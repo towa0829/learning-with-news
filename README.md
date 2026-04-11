@@ -1,36 +1,84 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# NewsLingo
 
-## Getting Started
+英語ニュースを使って、読む、訳す、語彙を貯める学習アプリです。  
+記事一覧から気になるニュースを開き、AI翻訳と重要語句の抽出で読解をサポートします。
 
-First, run the development server:
+公開URL: https://news-lingo.vercel.app
+
+## 主な機能
+
+- 英語ニュース記事の一覧表示（カテゴリ切り替え、キーワード検索）
+- 記事詳細表示（原文リンク、公開日、出典情報）
+- AI翻訳（タイトル・説明文の日本語化）
+- 重要語句の抽出（意味・英日例文つき）
+- 語彙保存と単語帳表示
+- 閲覧履歴の表示
+
+## 技術スタック
+
+- Framework: Next.js 16.2.2 (App Router)
+- Language: TypeScript
+- UI: Tailwind CSS v4, shadcn/ui, Radix UI, motion
+- Icons: lucide-react, react-icons
+- API: NewsAPI, OpenAI API
+
+## 必要な環境変数
+
+プロジェクトルートに .env.local を作成してください。
+
+```env
+NEWS_API_KEY=your_newsapi_key
+OPENAI_API_KEY=your_openai_api_key
+```
+
+メモ:
+
+- OPENAI_API_KEY が未設定でもアプリは動作します（翻訳・キーワード抽出はフォールバック動作）。
+- NEWS_API_KEY は記事取得に必須です。
+
+## セットアップ
+
+1. 依存関係をインストール
+
+```bash
+npm install
+```
+
+2. 開発サーバーを起動
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. ブラウザで確認
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+http://localhost:3000
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## スクリプト
 
-## Learn More
+- npm run dev: 開発サーバー起動
+- npm run build: 本番ビルド
+- npm run start: 本番サーバー起動
+- npm run lint: ESLint実行
 
-To learn more about Next.js, take a look at the following resources:
+## 画面構成
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- /: ホーム
+- /article: 記事一覧
+- /article/[id]: 記事詳細
+- /article/reading_history: 閲覧履歴
+- /vocabulary: 単語帳
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## APIエンドポイント
 
-## Deploy on Vercel
+- GET /api/article: 記事一覧取得（category または keyword）
+- GET /api/article/detail: 記事詳細取得（url）
+- POST /api/article/analyze: 翻訳・キーワード抽出
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## データ保存について
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+以下はブラウザの Local Storage に保存されます。
+
+- savedArticles
+- savedVocabulary
+
