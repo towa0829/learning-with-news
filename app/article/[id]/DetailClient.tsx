@@ -9,6 +9,8 @@ import { MdGTranslate } from "react-icons/md";
 import { MdOutlineExitToApp } from "react-icons/md";
 import Keyword from "@/components/parts/article/KeyWord";
 import { ShimmeringText } from "@/components/unlumen-ui/shimmering-text";
+import { defaultValueTypes } from "motion";
+import { div } from "motion/react-client";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -47,6 +49,7 @@ const DetailClient = ({ params }: Props) => {
           body: JSON.stringify({
             title: savedArticle.title,
             description: savedArticle.description,
+            bodyText: savedArticle.bodyText,
           }),
         });
         let data;
@@ -116,7 +119,15 @@ const DetailClient = ({ params }: Props) => {
       <p className="mt-4 text-base text-muted-foreground sm:text-lg">{article.description}</p>
       <div className="mt-3 flex flex-wrap items-center gap-2 text-sm sm:gap-4">
         {!analysis && (
-          <ShimmeringText text="Agent is analyzing..." duration={1.5} repeat={true} className="text-base"/>
+          <ShimmeringText text="Agent is analyzing..." duration={1.5} repeat={true} className="text-base" />
+        )}
+        {analysis && (
+          <div
+            className="prose prose-sm max-w-none prose-strong:text-blue-600 prose-strong:font-bold sm:prose-base"
+            dangerouslySetInnerHTML={{
+              __html: analysis.summarizedBodyTextHTML,
+            }}
+          />
         )}
         {analysis?.keywords?.length > 0 && (
           <p className="flex items-center gap-1 rounded-2xl bg-green-100 px-2 py-1 text-green-600"><LuSparkles />{analysis.keywords.length} difficult words found</p>
@@ -129,17 +140,22 @@ const DetailClient = ({ params }: Props) => {
         )}
       </div>
       {analysis && isOpen && (
-        <div className="mt-8 rounded-3xl border border-gray-300 bg-white p-4 text-sm sm:text-base">
-          <h2 className="mb-2 text-lg font-semibold sm:text-xl">Japanese Translation</h2>
-          <p className="text-muted-foreground">{analysis.translatedTitle}</p>
-          <p className="text-muted-foreground">{analysis.translatedDescription}</p>
-          <div className="mt-4 list-disc list-inside">
-            <h2 className="mb-2 text-lg font-semibold sm:text-xl">Keywords</h2>
-            {analysis.keywords?.map((item: any, idx: number) => (
-              <Keyword key={idx} item={item} />
-            ))}
+        <div>
+          
+          <div className="mt-8 rounded-3xl border border-gray-300 bg-white p-4 text-sm sm:text-base">
+
+            <h2 className="mb-2 text-lg font-semibold sm:text-xl">Japanese Translation</h2>
+            <p className="text-muted-foreground">{analysis.translatedTitle}</p>
+            <p className="text-muted-foreground">{analysis.translatedDescription}</p>
+            <p className="text-muted-foreground">{analysis.translatedBodyText}</p>
+            <div className="mt-4 list-disc list-inside">
+              <h2 className="mb-2 text-lg font-semibold sm:text-xl">Keywords</h2>
+              {analysis.keywords?.map((item: any, idx: number) => (
+                <Keyword key={idx} item={item} />
+              ))}
+            </div>
+            <p className="mt-4 text-sm text-gray-500 text-right">Translated with AI assistance</p>
           </div>
-          <p className="mt-4 text-sm text-gray-500 text-right">Translated with AI assistance</p>
         </div>
       )}
     </main>
