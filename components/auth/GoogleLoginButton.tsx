@@ -14,7 +14,7 @@ const login = async () => {
 
   return (
     <div>
-      <button onClick={login}>Login with Google</button>
+      <button onClick={login}>Login</button>
     </div>
   )
 }
