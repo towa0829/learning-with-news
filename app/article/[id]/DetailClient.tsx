@@ -9,8 +9,7 @@ import { MdGTranslate } from "react-icons/md";
 import { MdOutlineExitToApp } from "react-icons/md";
 import Keyword from "@/components/parts/article/KeyWord";
 import { ShimmeringText } from "@/components/unlumen-ui/shimmering-text";
-import { defaultValueTypes } from "motion";
-import { div } from "motion/react-client";
+
 
 type Props = {
   params: Promise<{ id: string }>;
