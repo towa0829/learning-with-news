@@ -4,6 +4,7 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu"
+import GoogleLoginButton from "@/components/auth/GoogleLoginButton";
 import { IoBookOutline } from "react-icons/io5";
 import { GrArticle } from "react-icons/gr";
 import { FaSave } from "react-icons/fa";
@@ -23,6 +24,9 @@ const Header = () => {
           </NavigationMenuItem>
           <NavigationMenuItem>
             <NavigationMenuLink href="/vocabulary"><FaSave />Vocabulary</NavigationMenuLink>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <GoogleLoginButton />
           </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
