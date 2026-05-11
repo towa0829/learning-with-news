@@ -30,7 +30,7 @@ const DetailClient = ({ params }: Props) => {
     async function loadArticle() {
       try {
         setIsLoading(true);
-        // Get authenticated user
+
         const { data: { user } } = await supabase.auth.getUser();
         const userId = user?.id;
 
@@ -63,7 +63,7 @@ const DetailClient = ({ params }: Props) => {
               name: data.source,
             },
           });
-          
+
           if (user?.id) {
             await supabase.from("view_history").insert({
               user_id: user.id,
@@ -83,8 +83,7 @@ const DetailClient = ({ params }: Props) => {
           throw new Error(`API error: ${res.status}`);
         }
 
-        const cache = await res.json();
-        const data = cache.article;
+        const data = await res.json();
 
         if (!isMounted) return;
 
