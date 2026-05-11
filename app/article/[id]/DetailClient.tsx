@@ -25,10 +25,55 @@ const DetailClient = ({ params }: Props) => {
   useEffect(() => {
     if (!params?.id) return;
 
+
     let isMounted = true;
     async function loadArticle() {
       try {
         setIsLoading(true);
+        // Get authenticated user
+        const { data: { user } } = await supabase.auth.getUser();
+        const userId = user?.id;
+
+        const cacheRes = await fetch(`/api/article/cache/${params.id}`);
+        if (cacheRes.ok) {
+          const data = await cacheRes.json();
+          setAnalysis({
+            summarizedBodyTextHTML:
+              data.summarized_body_text_html,
+
+            translatedTitle:
+              data.translated_title,
+
+            translatedDescription:
+              data.translated_description,
+
+            translatedBodyText:
+              data.translated_body_text,
+          });
+
+          setArticle({
+            id: data.id,
+            title: data.title,
+            description: data.description,
+            url: data.url,
+            urlToImage: data.image_url,
+            publishedAt: data.published_at,
+            author: data.author,
+            source: {
+              name: data.source,
+            },
+          });
+          
+          if (user?.id) {
+            await supabase.from("view_history").insert({
+              user_id: user.id,
+              article_id: data.id,
+            });
+          }
+
+          setIsLoading(false);
+          return;
+        }
 
         const res = await fetch(
           `/api/article/detail/${params.id}`,
@@ -38,7 +83,8 @@ const DetailClient = ({ params }: Props) => {
           throw new Error(`API error: ${res.status}`);
         }
 
-        const data = await res.json();
+        const cache = await res.json();
+        const data = cache.article;
 
         if (!isMounted) return;
 
@@ -62,10 +108,6 @@ const DetailClient = ({ params }: Props) => {
         if (!isMounted) return;
 
         setAnalysis(analysisData);
-
-        // Get authenticated user
-        const { data: { user } } = await supabase.auth.getUser();
-        const userId = user?.id;
 
         await fetch("/api/article/save", {
           method: "POST",
@@ -91,7 +133,7 @@ const DetailClient = ({ params }: Props) => {
     }
 
     loadArticle();
-    
+
     return () => {
       isMounted = false;
     };
@@ -168,7 +210,7 @@ const DetailClient = ({ params }: Props) => {
       </div>
       {analysis && isOpen && (
         <div>
-          
+
           <div className="mt-8 rounded-3xl border border-gray-300 bg-white p-4 text-sm sm:text-base">
 
             <h2 className="mb-2 text-lg font-semibold sm:text-xl">Japanese Translation</h2>
