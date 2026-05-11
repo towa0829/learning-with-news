@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   description: "英語ニュース記事の詳細を確認し、翻訳やキーワード分析で理解を深められるページ。",
 };
 
-export default function DetailPage({ params }: Props) {
-  return <DetailClient params={params} />;
+export default async function DetailPage({ params }: Props) {
+  const resolvedParams = await params;
+  return <DetailClient params={resolvedParams} />;
 }

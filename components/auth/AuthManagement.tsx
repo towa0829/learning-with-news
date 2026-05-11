@@ -48,7 +48,7 @@ const AuthManagement = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline">
-          {user ? <FaUserCheck /> : <FaUserPlus />}
+          {user ? <FaUserCheck className="text-blue-500" /> : <FaUserPlus className="text-blue-500" />}
           
           </Button>
       </DropdownMenuTrigger>
