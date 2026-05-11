@@ -24,10 +24,8 @@ export async function GET(
       );
     }
 
-    return NextResponse.json({
-      found: true,
-      article: data,
-    });
+    
+    return NextResponse.json(data);
   } catch (e) {
     return NextResponse.json(
       { found: false },
