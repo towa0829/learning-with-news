@@ -9,10 +9,11 @@ import { MdGTranslate } from "react-icons/md";
 import { MdOutlineExitToApp } from "react-icons/md";
 import Keyword from "@/components/parts/article/KeyWord";
 import { ShimmeringText } from "@/components/unlumen-ui/shimmering-text";
+import { supabase } from "@/lib/supabase/client";
 
 
 type Props = {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 };
 
 const DetailClient = ({ params }: Props) => {
@@ -22,52 +23,79 @@ const DetailClient = ({ params }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
+    if (!params?.id) return;
+
     let isMounted = true;
+    async function loadArticle() {
+      try {
+        setIsLoading(true);
 
-    async function loadAndAnalyze() {
-      const { id } = await params;
+        const res = await fetch(
+          `/api/article/detail/${params.id}`,
+        );
 
-      if (!id) {
-        if (isMounted) setIsLoading(false);
-        return;
-      }
+        if (!res.ok) {
+          throw new Error(`API error: ${res.status}`);
+        }
 
-      const savedArticles = localStorage.getItem("savedArticles");
-      const parsedArticles = savedArticles ? (JSON.parse(savedArticles) as Article[]) : [];
-      const savedArticle = parsedArticles.find((item) => item.id === id) ?? null;
+        const data = await res.json();
 
-      if (!isMounted) return;
+        if (!isMounted) return;
 
-      setArticle(savedArticle);
-      setIsLoading(false);
+        setArticle(data);
+        setIsLoading(false);
 
-      if (savedArticle) {
-        const res = await fetch("/api/article/analyze", {
+        const analysisRes = await fetch("/api/article/analyze", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify({
-            title: savedArticle.title,
-            description: savedArticle.description,
-            bodyText: savedArticle.bodyText,
+            title: data.title,
+            description: data.description,
+            bodyText: data.bodyText,
           }),
         });
-        let data;
-        try {
-          data = await res.json();
-        } catch (err) {
-          console.error("Failed to parse JSON:", err);
-          data = { error: "Invalid JSON response" };
+
+        const analysisData = await analysisRes.json();
+
+        if (!isMounted) return;
+
+        setAnalysis(analysisData);
+
+        // Get authenticated user
+        const { data: { user } } = await supabase.auth.getUser();
+        const userId = user?.id;
+
+        await fetch("/api/article/save", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            article: data,
+            analysis: analysisData,
+          }),
+        });
+
+        if (userId) {
+          await supabase.from("view_history").insert({
+            user_id: userId,
+            article_id: data.id,
+          });
         }
-        if (isMounted) setAnalysis(data);
+      } catch (e) {
+        console.error(e);
+        setIsLoading(false);
       }
     }
 
-    loadAndAnalyze();
-
+    loadArticle();
+    
     return () => {
       isMounted = false;
     };
-  }, [params]);
+  }, [params?.id]);
 
   if (isLoading) {
     return (
