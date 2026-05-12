@@ -7,26 +7,100 @@ import { Badge } from "@/components/ui/badge";
 import { BookOpen, Quote, Languages } from "lucide-react";
 import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/lib/supabase/client";
+
+type SavedVocabularyRow = Vocabulary & {
+  id: string;
+  article_id: string | null;
+  created_at: string;
+  updated_at: string;
+};
 
 const VocabularyListClient = () => {
-  const [vocabulary, setVocabulary] = useState<Vocabulary[]>([]);
+  const [vocabulary, setVocabulary] = useState<SavedVocabularyRow[]>([]);
 
   useEffect(() => {
     async function loadVocabulary() {
-      const savedVocabulary = localStorage.getItem("savedVocabulary");
-      const parsedVocabulary = savedVocabulary ? (JSON.parse(savedVocabulary) as Vocabulary[]) : [];
-      setVocabulary(parsedVocabulary.reverse());
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (!session?.access_token) {
+        setVocabulary([]);
+        return;
+      }
+
+      const legacySavedVocabulary = localStorage.getItem("savedVocabulary");
+      if (legacySavedVocabulary) {
+        try {
+          const parsedLegacyVocabulary = JSON.parse(legacySavedVocabulary) as Vocabulary[];
+
+          await Promise.all(
+            parsedLegacyVocabulary.map((word) =>
+              fetch("/api/vocabulary", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${session.access_token}`,
+                },
+                body: JSON.stringify({
+                  phrase: word.phrase,
+                  meaning: word.meaning,
+                  example_sentence: word.example_sentence,
+                }),
+              }),
+            ),
+          );
+
+          localStorage.removeItem("savedVocabulary");
+        } catch (error) {
+          console.error("Failed to migrate savedVocabulary", error);
+        }
+      }
+
+      const response = await fetch("/api/vocabulary", {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const text = await response.text();
+        console.error("Failed to load vocabulary", response.status, text);
+        setVocabulary([]);
+        return;
+      }
+
+      const json = await response.json();
+      setVocabulary((json.vocabulary ?? []) as SavedVocabularyRow[]);
     }
     loadVocabulary();
   }, []);
 
-  const handleDelete = (index: number) => {
+  const handleDelete = async (id: string) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this vocabulary?");
     if (!confirmDelete) return;
-    const updatedVocabulary = [...vocabulary];
-    updatedVocabulary.splice(index, 1);
-    setVocabulary(updatedVocabulary);
-    localStorage.setItem("savedVocabulary", JSON.stringify(updatedVocabulary));
+
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.access_token) {
+      console.error("No active session found for deleting vocabulary");
+      return;
+    }
+
+    const response = await fetch("/api/vocabulary", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session.access_token}`,
+      },
+      body: JSON.stringify({ id }),
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      console.error("Failed to delete vocabulary", response.status, text);
+      return;
+    }
+
+    setVocabulary((current) => current.filter((word) => word.id !== id));
   };
 
   return (
@@ -56,7 +130,7 @@ const VocabularyListClient = () => {
         ) : (
           <div className="grid gap-4 sm:grid-cols-2">
             {vocabulary.map((word, index) => (
-              <Card key={index} className="group transition-all duration-200 hover:shadow-md hover:border-primary/20">
+              <Card key={word.id} className="group transition-all duration-200 hover:shadow-md hover:border-primary/20">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between gap-2">
                     <CardTitle className="text-xl font-bold text-foreground">
@@ -67,7 +141,7 @@ const VocabularyListClient = () => {
                         variant="ghost"
                         size="icon"
                         className="size-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
-                        onClick={() => handleDelete(index)}
+                        onClick={() => handleDelete(word.id)}
                       >
                         <Trash2 className="size-4" />
                       </Button>
@@ -87,12 +161,12 @@ const VocabularyListClient = () => {
                       Example
                     </div>
                     <p className="text-sm leading-relaxed text-foreground">
-                      {word.example_sentence.en}
+                      {word.example_sentence?.en}
                     </p>
                   </div>
                   <div className="flex items-start gap-2 text-sm text-muted-foreground">
                     <Languages className="mt-0.5 size-4 shrink-0" />
-                    <p className="leading-relaxed">{word.example_sentence.ja}</p>
+                    <p className="leading-relaxed">{word.example_sentence?.ja}</p>
                   </div>
                 </CardContent>
               </Card>

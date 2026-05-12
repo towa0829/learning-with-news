@@ -9,7 +9,16 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { FaSearch } from "react-icons/fa";
 
-const categoryList: Category[] = ["general", "business", "entertainment", "health", "science", "sports", "technology"];
+export const categoryList = [
+  "technology",
+  "business",
+  "science",
+  "world",
+  "politics",
+  "environment",
+  "culture",
+  "sport",
+] as const;
 
 const ArticleListClient = () => {
   const [selectedCategory, setSelectedCategory] = useState<Category>("general");

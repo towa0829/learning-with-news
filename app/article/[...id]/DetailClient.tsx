@@ -34,49 +34,55 @@ const DetailClient = ({ params }: Props) => {
         const { data: { user } } = await supabase.auth.getUser();
         const userId = user?.id;
 
-        const cacheRes = await fetch(`/api/article/cache/${params.id}`);
+        const cacheRes = await fetch(`/api/article/cache/${encodeURIComponent(params.id)}`);
         if (cacheRes.ok) {
-          const data = await cacheRes.json();
-          setAnalysis({
-            summarizedBodyTextHTML:
-              data.summarized_body_text_html,
+          const cacheData = await cacheRes.json();
 
-            translatedTitle:
-              data.translated_title,
+          if (cacheData?.found === false) {
+            // Not in DB cache yet. Continue to fetch from detail API.
+          } else {
+            setAnalysis({
+              summarizedBodyTextHTML:
+                cacheData.summarized_body_text_html,
 
-            translatedDescription:
-              data.translated_description,
+              translatedTitle:
+                cacheData.translated_title,
 
-            translatedBodyText:
-              data.translated_body_text,
-          });
+              translatedDescription:
+                cacheData.translated_description,
 
-          setArticle({
-            id: data.id,
-            title: data.title,
-            description: data.description,
-            url: data.url,
-            urlToImage: data.image_url,
-            publishedAt: data.published_at,
-            author: data.author,
-            source: {
-              name: data.source,
-            },
-          });
-
-          if (user?.id) {
-            await supabase.from("view_history").insert({
-              user_id: user.id,
-              article_id: data.id,
+              translatedBodyText:
+                cacheData.translated_body_text,
+              keywords: cacheData.keywords ?? [],
             });
-          }
 
-          setIsLoading(false);
-          return;
+            setArticle({
+              id: cacheData.id,
+              title: cacheData.title,
+              description: cacheData.description,
+              url: cacheData.url,
+              urlToImage: cacheData.image_url,
+              publishedAt: cacheData.published_at,
+              author: cacheData.author,
+              source: {
+                name: cacheData.source,
+              },
+            });
+
+            if (user?.id) {
+              await supabase.from("view_history").insert({
+                user_id: user.id,
+                article_id: cacheData.id,
+              });
+            }
+
+            setIsLoading(false);
+            return;
+          }
         }
 
         const res = await fetch(
-          `/api/article/detail/${params.id}`,
+          `/api/article/detail/${encodeURIComponent(params.id)}`,
         );
 
         if (!res.ok) {
@@ -219,7 +225,7 @@ const DetailClient = ({ params }: Props) => {
             <div className="mt-4 list-disc list-inside">
               <h2 className="mb-2 text-lg font-semibold sm:text-xl">Keywords</h2>
               {analysis.keywords?.map((item: any, idx: number) => (
-                <Keyword key={idx} item={item} />
+                <Keyword key={idx} item={item} articleId={article.id} />
               ))}
             </div>
             <p className="mt-4 text-sm text-gray-500 text-right">Translated with AI assistance</p>

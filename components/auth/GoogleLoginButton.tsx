@@ -7,7 +7,7 @@ const login = async () => {
   await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: "https://news-lingo.vercel.app/auth/callback"
+      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
     }
   })
 }

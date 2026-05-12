@@ -19,6 +19,7 @@ export async function POST(req: Request) {
     translated_title: analysis.translatedTitle,
     translated_description: analysis.translatedDescription,
     translated_body_text: analysis.translatedBodyText,
+    keywords: analysis.keywords ?? null,
   });
 
   if(error) {

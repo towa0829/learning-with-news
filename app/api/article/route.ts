@@ -1,85 +1,64 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Article, GuardianArticle } from "@/lib/type";
 
-// export async function GET(req: NextRequest) {
-
-//   const category = req.nextUrl.searchParams.get("category") || "general";
-//   const keyword = req.nextUrl.searchParams.get("keyword");
-
-//   const params = new URLSearchParams({
-//     language: "en",
-//     pageSize: "10",
-//     apiKey: process.env.NEWS_API_KEY!,
-//   });
-
-//   if (keyword) {
-//     params.set("q", keyword);
-//   } else {
-//     params.set("category", category || "general");
-//   }
-
-//   const res = await fetch(
-//     `https://newsapi.org/v2/top-headlines?${params.toString()}`
-//   );
-//   const data = await res.json();
-
-//   const articles = data.articles.map((article: Article) => ({
-//     id: encodeURIComponent(article.url),
-//     source: article.source,
-//     author: article.author,
-//     title: article.title,
-//     description: article.description,
-//     url: article.url,
-//     urlToImage: article.urlToImage,
-//     publishedAt: article.publishedAt,
-
-//   }))
-
-//   return NextResponse.json({ articles });
-// }
-
 export async function GET(req: NextRequest) {
+  try {
+    const category = req.nextUrl.searchParams.get("category") || "general";
+    const keyword = req.nextUrl.searchParams.get("keyword")?.trim();
 
-  // const category = req.nextUrl.searchParams.get("category") || "general";
-  // const keyword = req.nextUrl.searchParams.get("keyword");
+    const params = new URLSearchParams({
+      "show-fields": "bodyText,thumbnail,trailText,byline",
+      "page-size": "10",
+      "order-by": "newest",
+      "api-key": process.env.GUARDIAN_API_KEY || "",
+    });
 
-  // const params = new URLSearchParams({
-  //   language: "en",
-  //   pageSize: "10",
-  //   apiKey: process.env.NEWS_API_KEY!,
-  // });
+    if (keyword) {
+      params.set("q", keyword);
+    }
 
-  // if (keyword) {
-  //   params.set("q", keyword);
-  // } else {
-  //   params.set("category", category || "general");
-  // }
+    if (!keyword && category && category !== "general") {
+      params.set("section", category);
+    }
 
-  // const res = await fetch(
-  //   `https://newsapi.org/v2/top-headlines?${params.toString()}`
-  // );
-  const res = await fetch(
-  `https://content.guardianapis.com/search?q=ai&show-fields=bodyText,thumbnail,trailText,byline&api-key=${process.env.GUARDIAN_API_KEY}`
-);
+    const res = await fetch(
+      `https://content.guardianapis.com/search?${params.toString()}`,
+      { cache: "no-store" },
+    );
 
-const data = await res.json();
+    if (!res.ok) {
+      const text = await res.text();
+      return NextResponse.json(
+        { error: `Guardian API error: ${res.status}`, detail: text },
+        { status: 502 },
+      );
+    }
 
-const articles: Article[] = data.response.results.map(
-  (article: GuardianArticle) => ({
-    id: encodeURIComponent(article.id),
-    source: {
-      id: article.sectionId,
-      name: article.sectionName,
-    },
-    author: article.fields?.byline ?? null,
-    title: article.webTitle,
-    description: article.fields?.trailText ?? null,
-    url: article.webUrl,
-    urlToImage: article.fields?.thumbnail ?? null,
-    publishedAt: article.webPublicationDate,
-    bodyText: article.fields?.bodyText ?? null,
-  })
-);
+    const data = await res.json();
 
-return NextResponse.json({ articles });
+    const articles: Article[] = (data?.response?.results ?? []).map(
+      (article: GuardianArticle) => ({
+        id: encodeURIComponent(article.id),
+        source: {
+          id: article.sectionId,
+          name: article.sectionName,
+        },
+        author: article.fields?.byline ?? null,
+        title: article.webTitle,
+        description: article.fields?.trailText ?? null,
+        url: article.webUrl,
+        urlToImage: article.fields?.thumbnail ?? null,
+        publishedAt: article.webPublicationDate,
+        bodyText: article.fields?.bodyText ?? null,
+      }),
+    );
+
+    return NextResponse.json({ articles });
+  } catch (error) {
+    console.error("/api/article GET error:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch articles" },
+      { status: 500 },
+    );
+  }
 }

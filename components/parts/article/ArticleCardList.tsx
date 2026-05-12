@@ -3,8 +3,6 @@ import ArticleCard from "./ArticleCard";
 import { useState, useEffect } from "react";
 import { Article, Category } from "@/lib/type";
 
-const CategoryList: Category[] = ["business", "entertainment", "general", "health", "science", "sports", "technology"];
-
 type Props = {
   category: Category;
   keyword: string;

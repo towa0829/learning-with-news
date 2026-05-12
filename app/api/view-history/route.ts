@@ -1,6 +1,7 @@
 import { supabase } from "@/lib/supabase/client";
 import { NextResponse } from "next/server";
 
+
 export async function POST(req: Request) {
   const { userId, articleId } = await req.json();
 
