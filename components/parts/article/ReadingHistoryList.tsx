@@ -20,11 +20,11 @@ const ReadingHistoryList = () => {
 
         const { data, error } = await supabase
           .from("view_history")
-          .select(`created_at,
+          .select(`viewed_at,
               articles (*)
             `)
           .eq("user_id", user.id)
-          .order("created_at", { ascending: false });
+          .order("viewed_at", { ascending: false });
 
         if (error) {
           console.error(error);
