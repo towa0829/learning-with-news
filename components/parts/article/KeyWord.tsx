@@ -13,20 +13,39 @@ import { X } from "lucide-react";
 import { Bookmark } from "lucide-react";
 import { Vocabulary } from "@/lib/type";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/lib/supabase/client";
 
 type Props = {
   item: Vocabulary;
+  articleId?: string;
 }
 
-const KeyWord = ({item }: Props) => {
-    const saveVocabulary = (word: Vocabulary) => {
-    const savedVocabulary = localStorage.getItem("savedVocabulary");
-    const parsedVocabulary = savedVocabulary ? (JSON.parse(savedVocabulary) as Vocabulary[]) : [];
-    const existingWord = parsedVocabulary.find((w) => w.phrase === word.phrase);
+const KeyWord = ({ item, articleId }: Props) => {
+  const saveVocabulary = async (word: Vocabulary) => {
+    const { data: { session } } = await supabase.auth.getSession();
 
-    if (!existingWord) {
-      parsedVocabulary.push(word);
-      localStorage.setItem("savedVocabulary", JSON.stringify(parsedVocabulary));
+    if (!session?.access_token) {
+      console.error("No active session found for saving vocabulary");
+      return;
+    }
+
+    const response = await fetch("/api/vocabulary", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session.access_token}`,
+      },
+      body: JSON.stringify({
+        articleId,
+        phrase: word.phrase,
+        meaning: word.meaning,
+        example_sentence: word.example_sentence,
+      }),
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      console.error("Failed to save vocabulary", response.status, text);
     }
   };
   return (

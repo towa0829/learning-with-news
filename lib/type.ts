@@ -11,6 +11,13 @@ export type Article = {
   urlToImage: string | null;
   publishedAt: string;
   bodyText?: string | null;
+  // optional analysis/translations (may come from DB as translated_title, etc.)
+  translatedTitle?: string | null;
+  translated_description?: string | null; // DB snake_case
+  translatedDescription?: string | null;
+  translatedBodyText?: string | null;
+  translated_body_text?: string | null; // DB snake_case
+  keywords?: Array<Vocabulary> | null;
 };
 
 export type GuardianArticle = {
@@ -44,6 +51,11 @@ export type ArticleForDB = {
   translatedTitle?: string;
   translatedDescription?: string;
   translatedBodyText?: string;
+  // DB column snake_case versions
+  translated_title?: string;
+  translated_description?: string;
+  translated_body_text?: string;
+  keywords?: Array<Vocabulary> | null;
   url: string;
   imageUrl?: string;
   source: string;
@@ -59,7 +71,16 @@ export type ViewHistory = {
   viewed_at: string;
 }
 
-export type Category = "business" | "entertainment" | "general" | "health" | "science" | "sports" | "technology" | "";
+export type Category =
+  | "technology"
+  | "business"
+  | "science"
+  | "world"
+  | "politics"
+  | "environment"
+  | "culture"
+  | "sport"
+  | "";
 
 export type Vocabulary = {
   phrase: string;

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import DetailClient from "./DetailClient";
 
 type Props = {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string | string[] }>;
 };
 
 export const metadata: Metadata = {
@@ -12,5 +12,7 @@ export const metadata: Metadata = {
 
 export default async function DetailPage({ params }: Props) {
   const resolvedParams = await params;
-  return <DetailClient params={resolvedParams} />;
+  const rawId = resolvedParams.id;
+  const id = Array.isArray(rawId) ? rawId.join("/") : rawId;
+  return <DetailClient params={{ id }} />;
 }
