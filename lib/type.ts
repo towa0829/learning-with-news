@@ -71,7 +71,16 @@ export type ViewHistory = {
   viewed_at: string;
 }
 
-export type Category = "business" | "entertainment" | "general" | "health" | "science" | "sports" | "technology" | "";
+export type Category =
+  | "technology"
+  | "business"
+  | "science"
+  | "world"
+  | "politics"
+  | "environment"
+  | "culture"
+  | "sport"
+  | "";
 
 export type Vocabulary = {
   phrase: string;

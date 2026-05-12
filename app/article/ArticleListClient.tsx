@@ -21,7 +21,7 @@ export const categoryList = [
 ] as const;
 
 const ArticleListClient = () => {
-  const [selectedCategory, setSelectedCategory] = useState<Category>("general");
+  const [selectedCategory, setSelectedCategory] = useState<Category>("technology");
   const [keyword, setKeyword] = useState("");
   const [inputValue, setInputValue] = useState("");
 
