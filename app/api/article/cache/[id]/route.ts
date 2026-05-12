@@ -20,7 +20,7 @@ export async function GET(
     if (error || !data) {
       return NextResponse.json(
         { found: false },
-        { status: 404 }
+        { status: 200 }
       );
     }
 
